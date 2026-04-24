@@ -8,11 +8,13 @@ export default function FormPage() {
     priority: ""
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.title) {
@@ -20,17 +22,57 @@ export default function FormPage() {
       return;
     }
 
-    API.post("/crisis", form)
-      .then(() => alert("Created successfully"))
-      .catch(() => alert("Error"));
+    try {
+      setLoading(true);
+
+      await API.post("/crisis", form);
+
+      alert("Created successfully");
+
+      // ✅ Clear form
+      setForm({
+        title: "",
+        status: "",
+        priority: ""
+      });
+
+      // ✅ Reload list (simple fix)
+      window.location.reload();
+
+    } catch (error) {
+      console.error(error);
+      alert("Error while creating data");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input name="title" placeholder="Title" onChange={handleChange} />
-      <input name="status" placeholder="Status" onChange={handleChange} />
-      <input name="priority" placeholder="Priority" onChange={handleChange} />
-      <button type="submit">Submit</button>
+    <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+      <input
+        name="title"
+        placeholder="Title"
+        value={form.title}
+        onChange={handleChange}
+      />
+
+      <input
+        name="status"
+        placeholder="Status"
+        value={form.status}
+        onChange={handleChange}
+      />
+
+      <input
+        name="priority"
+        placeholder="Priority"
+        value={form.priority}
+        onChange={handleChange}
+      />
+
+      <button type="submit" disabled={loading}>
+        {loading ? "Submitting..." : "Submit"}
+      </button>
     </form>
   );
 }

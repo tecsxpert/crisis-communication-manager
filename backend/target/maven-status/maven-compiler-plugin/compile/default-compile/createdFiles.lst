@@ -1,1 +1,7 @@
 com\internship\tool\Application.class
+com\internship\tool\config\CorsConfig.class
+com\internship\tool\config\CorsConfig$1.class
+com\internship\tool\entity\Crisis.class
+com\internship\tool\controller\CrisisController.class
+com\internship\tool\repository\CrisisRepository.class
+com\internship\tool\service\CrisisService.class
