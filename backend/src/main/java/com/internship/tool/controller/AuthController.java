@@ -1,0 +1,41 @@
+package com.internship.tool.controller;
+
+import com.internship.tool.entity.User;
+import com.internship.tool.repository.UserRepository;
+import com.internship.tool.config.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping("/register")
+    public String register(@RequestBody User user) {
+        userRepository.save(user);
+        return "User registered";
+    }
+
+    @PostMapping("/login")
+    public Object login(@RequestBody User user) {
+
+        User existing = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!existing.getPassword().equals(user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtUtil.generateToken(existing.getUsername());
+
+        return java.util.Map.of(
+                "token", token,
+                "username", existing.getUsername());
+    }
+}
