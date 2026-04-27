@@ -2,6 +2,7 @@ package com.internship.tool.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,15 +31,23 @@ public class CrisisController {
 
     // ✅ CREATE
     @PostMapping
-    public ResponseEntity<Crisis> create(@RequestBody Crisis crisis) {
-        Crisis saved = service.create(crisis);
-        return ResponseEntity.status(201).body(saved); // better status
+    public ResponseEntity<?> create(@RequestBody Crisis crisis) {
+        try {
+            Crisis saved = service.create(crisis);
+            return ResponseEntity.status(201).body(saved);
+        } catch (Exception e) {
+            e.printStackTrace(); // 🔥 useful for debugging
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
 
-    // ✅ GET ALL
+    // ✅ GET ALL WITH PAGINATION
     @GetMapping
-    public ResponseEntity<List<Crisis>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<Page<Crisis>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        return ResponseEntity.ok(service.getAll(page, size));
     }
 
     // ✅ GET BY ID
@@ -54,7 +63,7 @@ public class CrisisController {
         return ResponseEntity.ok(updated);
     }
 
-    // ✅ DELETE (SOFT or HARD depending on service)
+    // ✅ DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);

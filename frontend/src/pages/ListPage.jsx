@@ -1,92 +1,86 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 
-function ListPage() {
+export default function ListPage({ refresh }) {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Pagination (basic)
   const [page, setPage] = useState(0);
-  const [size] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, [page]);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-  const fetchData = () => {
-    setLoading(true);
+      const res = await API.get(`/crisis?page=${page}&size=5`);
 
-    API.get("/crisis")
-      .then((res) => {
-        // if backend returns plain list
-        setData(res.data);
+      console.log("API RESPONSE:", res.data);
 
-        // if backend returns Page object (Spring Boot)
-        // setData(res.data.content);
+      setData(res.data.content);
+      setTotalPages(res.data.totalPages);
 
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching data:", err);
-        setError("Failed to load data");
-        setLoading(false);
-      });
+    } catch (err) {
+      console.error("Fetch Error:", err.response || err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: "red" }}>{error}</p>;
-  }
+  // ✅ Reload when page changes OR new data added
+  useEffect(() => {
+    fetchData();
+  }, [page, refresh]);
 
   return (
     <div>
       <h2>Crisis List</h2>
 
-      {data.length === 0 ? (
+      {loading ? (
+        <p>Loading...</p>
+      ) : data.length === 0 ? (
         <p>No data available</p>
       ) : (
-        <>
-          <table border="1" cellPadding="5">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Priority</th>
+        <table border="1" cellPadding="5">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Priority</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.title}</td>
+                <td>{item.status}</td>
+                <td>{item.priority}</td>
               </tr>
-            </thead>
-            <tbody>
-              {data.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.title}</td>
-                  <td>{item.status}</td>
-                  <td>{item.priority}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Pagination buttons */}
-          <div style={{ marginTop: "10px" }}>
-            <button onClick={() => setPage(page - 1)} disabled={page === 0}>
-              Prev
-            </button>
-
-            <span style={{ margin: "0 10px" }}>Page: {page}</span>
-
-            <button onClick={() => setPage(page + 1)}>
-              Next
-            </button>
-          </div>
-        </>
+            ))}
+          </tbody>
+        </table>
       )}
+
+      <br />
+
+      {/* ✅ Pagination Controls */}
+      <button
+        onClick={() => setPage(page - 1)}
+        disabled={page === 0}
+      >
+        Prev
+      </button>
+
+      <span style={{ margin: "0 10px" }}>
+        Page {page + 1} of {totalPages}
+      </span>
+
+      <button
+        onClick={() => setPage(page + 1)}
+        disabled={page + 1 >= totalPages}
+      >
+        Next
+      </button>
     </div>
   );
 }
-
-export default ListPage;
