@@ -1,6 +1,10 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
+
 import FormPage from "./pages/FormPage";
 import ListPage from "./pages/ListPage";
+import DetailPage from "./pages/DetailPage";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -10,10 +14,28 @@ function App() {
   };
 
   return (
-    <>
-      <FormPage onSuccess={handleRefresh} />
-      <ListPage refresh={refresh} />
-    </>
+    <BrowserRouter>
+      <Routes>
+
+        {/* ✅ FIX: Default route */}
+        <Route path="/" element={<Dashboard />} />
+
+        {/* List + Form */}
+        <Route
+          path="/list"
+          element={
+            <>
+              <FormPage onSuccess={handleRefresh} />
+              <ListPage refresh={refresh} />
+            </>
+          }
+        />
+
+        {/* Detail */}
+        <Route path="/crisis/:id" element={<DetailPage />} />
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 

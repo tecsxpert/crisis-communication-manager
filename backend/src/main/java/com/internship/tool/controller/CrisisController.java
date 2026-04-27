@@ -1,6 +1,7 @@
 package com.internship.tool.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import com.internship.tool.service.CrisisService;
 
 @RestController
 @RequestMapping("/crisis")
-@CrossOrigin(origins = "http://localhost:5173") // allow frontend
+@CrossOrigin(origins = "http://localhost:5173")
 public class CrisisController {
 
     private final CrisisService service;
@@ -36,7 +37,7 @@ public class CrisisController {
             Crisis saved = service.create(crisis);
             return ResponseEntity.status(201).body(saved);
         } catch (Exception e) {
-            e.printStackTrace(); // 🔥 useful for debugging
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
@@ -50,20 +51,20 @@ public class CrisisController {
         return ResponseEntity.ok(service.getAll(page, size));
     }
 
-    // ✅ GET BY ID
+    // ✅ GET BY ID (Detail Page)
     @GetMapping("/{id}")
     public ResponseEntity<Crisis> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    // ✅ UPDATE
+    // ✅ UPDATE (Edit Button)
     @PutMapping("/{id}")
     public ResponseEntity<Crisis> update(@PathVariable Long id, @RequestBody Crisis crisis) {
         Crisis updated = service.update(id, crisis);
         return ResponseEntity.ok(updated);
     }
 
-    // ✅ DELETE
+    // ✅ DELETE (Delete Button)
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);
@@ -74,5 +75,11 @@ public class CrisisController {
     @GetMapping("/search")
     public ResponseEntity<List<Crisis>> search(@RequestParam String q) {
         return ResponseEntity.ok(service.search(q));
+    }
+
+    // 🔥 DAY 6: STATS API (Dashboard KPI)
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Long>> getStats() {
+        return ResponseEntity.ok(service.getStats());
     }
 }
