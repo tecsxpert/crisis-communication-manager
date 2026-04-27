@@ -12,21 +12,33 @@ public class JwtUtil {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(String username) {
+    // 🔥 GENERATE TOKEN (WITH ROLE)
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role) // IMPORTANT
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(key)
                 .compact();
     }
 
+    // 🔥 EXTRACT USERNAME
     public String extractUsername(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    // 🔥 EXTRACT ROLE
+    public String extractRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+
+    // 🔥 COMMON METHOD
+    private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 }

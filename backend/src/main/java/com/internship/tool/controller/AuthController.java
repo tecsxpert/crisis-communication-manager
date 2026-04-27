@@ -18,13 +18,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestBody User user) {
+        if (user.getRole() == null) {
+            user.setRole("ROLE_USER"); // default role
+        }
         userRepository.save(user);
         return "User registered";
     }
 
     @PostMapping("/login")
-    public Object login(@RequestBody User user) {
-
+    public String login(@RequestBody User user) {
         User existing = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -32,10 +34,6 @@ public class AuthController {
             throw new RuntimeException("Invalid password");
         }
 
-        String token = jwtUtil.generateToken(existing.getUsername());
-
-        return java.util.Map.of(
-                "token", token,
-                "username", existing.getUsername());
+        return jwtUtil.generateToken(existing.getUsername(), existing.getRole());
     }
 }
