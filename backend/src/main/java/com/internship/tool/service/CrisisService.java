@@ -43,4 +43,28 @@ public class CrisisService {
         return crisisRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Crisis not found with id: " + id));
     }
+
+    // 🔍 SEARCH + FILTER (Day 7)
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public List<Crisis> searchCrisis(String title, String severity) {
+
+        // case 1: both present
+        if (title != null && severity != null) {
+            return crisisRepository
+                    .findByTitleContainingIgnoreCaseAndSeverity(title, severity);
+        }
+
+        // case 2: only title
+        if (title != null) {
+            return crisisRepository.findByTitleContainingIgnoreCase(title);
+        }
+
+        // case 3: only severity
+        if (severity != null) {
+            return crisisRepository.findBySeverity(severity);
+        }
+
+        // case 4: none
+        return crisisRepository.findAll();
+    }
 }

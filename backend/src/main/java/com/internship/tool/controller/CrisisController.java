@@ -2,9 +2,7 @@ package com.internship.tool.controller;
 
 import com.internship.tool.entity.Crisis;
 import com.internship.tool.service.CrisisService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,23 +12,32 @@ import java.util.List;
 public class CrisisController {
 
     @Autowired
-    private CrisisService service;
+    private CrisisService crisisService;   // 🔥 THIS WAS MISSING
 
-    // ✅ POST - Create Crisis
+    // CREATE
     @PostMapping
-    public ResponseEntity<Crisis> create(@Valid @RequestBody Crisis crisis) {
-        return ResponseEntity.ok(service.createCrisis(crisis));
+    public Crisis create(@RequestBody Crisis crisis) {
+        return crisisService.createCrisis(crisis);
     }
 
-    // ✅ GET - All Crisis
+    // GET ALL
     @GetMapping
-    public ResponseEntity<List<Crisis>> getAll() {
-        return ResponseEntity.ok(service.getAllCrisis());
+    public List<Crisis> getAll() {
+        return crisisService.getAllCrisis();
     }
 
-    // ✅ GET - By ID
+    // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Crisis> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getCrisisById(id));
+    public Crisis getById(@PathVariable Long id) {
+        return crisisService.getCrisisById(id);
+    }
+
+    // 🔍 SEARCH (Day 7)
+    @GetMapping("/search")
+    public List<Crisis> search(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String severity) {
+
+        return crisisService.searchCrisis(title, severity);
     }
 }
