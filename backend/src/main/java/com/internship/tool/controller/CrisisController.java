@@ -1,5 +1,6 @@
 package com.internship.tool.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -51,20 +52,19 @@ public class CrisisController {
         return ResponseEntity.ok(service.getAll(page, size));
     }
 
-    // ✅ GET BY ID (Detail Page)
+    // ✅ GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Crisis> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    // ✅ UPDATE (Edit Button)
+    // ✅ UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<Crisis> update(@PathVariable Long id, @RequestBody Crisis crisis) {
-        Crisis updated = service.update(id, crisis);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(service.update(id, crisis));
     }
 
-    // ✅ DELETE (Delete Button)
+    // ✅ DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         service.delete(id);
@@ -77,9 +77,27 @@ public class CrisisController {
         return ResponseEntity.ok(service.search(q));
     }
 
-    // 🔥 DAY 6: STATS API (Dashboard KPI)
+    // ✅ STATS (Day 6)
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
         return ResponseEntity.ok(service.getStats());
+    }
+
+    // 🔥 FILTER (Day 7)
+    @GetMapping("/filter")
+    public ResponseEntity<Page<Crisis>> filter(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        LocalDateTime startDate = start != null ? LocalDateTime.parse(start) : null;
+        LocalDateTime endDate = end != null ? LocalDateTime.parse(end) : null;
+
+        return ResponseEntity.ok(
+                service.filter(title, status, startDate, endDate, page, size)
+        );
     }
 }

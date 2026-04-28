@@ -1,5 +1,6 @@
 package com.internship.tool.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,10 +8,12 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.internship.tool.aop.AuditLog;
 import com.internship.tool.entity.Crisis;
-import com.internship.tool.repository.CrisisRepository;
+import com.internship.tool.repository.CrisisRepository;   // 🔥 IMPORTANT
 
 @Service
 public class CrisisService {
@@ -22,16 +25,17 @@ public class CrisisService {
     }
 
     // ✅ CREATE
+    @AuditLog("CREATE crisis")   // 🔥 ADD THIS
     public Crisis create(Crisis crisis) {
         return repository.save(crisis);
     }
 
-    // ✅ GET ALL (optional)
+    // ✅ GET ALL
     public List<Crisis> getAll() {
         return repository.findAll();
     }
 
-    // ✅ GET ALL WITH PAGINATION (Day 5)
+    // ✅ GET ALL WITH PAGINATION
     public Page<Crisis> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return repository.findAll(pageable);
@@ -44,10 +48,12 @@ public class CrisisService {
     }
 
     // ✅ UPDATE
+    @AuditLog("UPDATE crisis")   // 🔥 ADD THIS
     public Crisis update(Long id, Crisis crisis) {
         Crisis existing = getById(id);
 
         existing.setTitle(crisis.getTitle());
+        existing.setDescription(crisis.getDescription());
         existing.setStatus(crisis.getStatus());
         existing.setPriority(crisis.getPriority());
 
@@ -55,6 +61,7 @@ public class CrisisService {
     }
 
     // ✅ DELETE
+    @AuditLog("DELETE crisis")   // 🔥 ADD THIS
     public void delete(Long id) {
         repository.deleteById(id);
     }
@@ -64,7 +71,7 @@ public class CrisisService {
         return repository.findByTitleContainingIgnoreCase(q);
     }
 
-    // 🔥 DAY 6: STATS (VERY IMPORTANT)
+    // 🔥 DAY 6: STATS
     public Map<String, Long> getStats() {
         Map<String, Long> stats = new HashMap<>();
 
@@ -74,5 +81,38 @@ public class CrisisService {
         stats.put("highPriority", repository.countByPriority("1st"));
 
         return stats;
+    }
+
+    // 🔥 DAY 7: FILTER
+    public Page<Crisis> filter(
+            String title,
+            String status,
+            LocalDateTime start,
+            LocalDateTime end,
+            int page,
+            int size) {
+
+        Specification<Crisis> spec = (root, query, cb) -> cb.conjunction();
+
+        // 🔍 Title filter
+        if (title != null && !title.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+        }
+
+        // 📌 Status filter
+        if (status != null && !status.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("status"), status));
+        }
+
+        // 📅 Date filter
+        if (start != null && end != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.between(root.get("createdAt"), start, end));
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAll(spec, pageable);
     }
 }

@@ -2,10 +2,12 @@ package com.internship.tool.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,13 +20,21 @@ public class Crisis {
 
     private String title;
 
-    private String description;   // ✅ IMPORTANT (matches DB)
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     private String status;
 
     private String priority;
 
-    private LocalDateTime createdAt;  // ✅ optional (matches DB column created_at)
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    // ✅ CORRECT PLACE (inside class, before constructors)
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     // ✅ Constructors
     public Crisis() {}
@@ -34,10 +44,9 @@ public class Crisis {
         this.description = description;
         this.status = status;
         this.priority = priority;
-        this.createdAt = LocalDateTime.now();
     }
 
-    // ✅ Getters & Setters
+    // ✅ Getters
 
     public Long getId() {
         return id;
@@ -47,39 +56,37 @@ public class Crisis {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {       // ✅ NEW
+    public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {   // ✅ NEW
-        this.description = description;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public LocalDateTime getCreatedAt() {   // ✅ OPTIONAL
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    // ✅ Setters (except createdAt)
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }
