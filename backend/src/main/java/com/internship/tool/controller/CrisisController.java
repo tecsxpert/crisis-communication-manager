@@ -6,16 +6,8 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.internship.tool.entity.Crisis;
 import com.internship.tool.service.CrisisService;
@@ -43,7 +35,7 @@ public class CrisisController {
         }
     }
 
-    // ✅ GET ALL WITH PAGINATION (Day 5)
+    // ✅ GET ALL WITH PAGINATION
     @GetMapping
     public ResponseEntity<Page<Crisis>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -52,7 +44,7 @@ public class CrisisController {
         return ResponseEntity.ok(service.getAll(page, size));
     }
 
-    // ✅ GET BY ID (Detail Page)
+    // ✅ GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Crisis> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
@@ -71,19 +63,19 @@ public class CrisisController {
         return ResponseEntity.ok("Deleted successfully");
     }
 
-    // ✅ SEARCH (simple search)
+    // ✅ SEARCH
     @GetMapping("/search")
     public ResponseEntity<List<Crisis>> search(@RequestParam String q) {
         return ResponseEntity.ok(service.search(q));
     }
 
-    // ✅ STATS API (Day 6)
+    // ✅ STATS
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
         return ResponseEntity.ok(service.getStats());
     }
 
-    // ✅ FILTER API (Day 7 - search/filter bar support)
+    // ✅ FILTER
     @GetMapping("/filter")
     public ResponseEntity<Page<Crisis>> filter(
             @RequestParam(required = false) String title,
@@ -106,11 +98,65 @@ public class CrisisController {
         );
     }
 
-    // 🔥 OPTIONAL (Bonus for Day 8 - AI Panel support)
+    // ✅ AI SUMMARY
     @GetMapping("/ai-summary")
     public ResponseEntity<String> getAISummary() {
         return ResponseEntity.ok(
                 "AI Summary: Crisis is being monitored. Take immediate action if priority is high."
         );
+    }
+
+    // 🔥 CSV EXPORT
+    @GetMapping("/export")
+    public ResponseEntity<String> exportCSV() {
+        try {
+            List<Crisis> list = service.getAll();
+
+            StringBuilder csv = new StringBuilder();
+            csv.append("ID,Title,Status,Priority\n");
+
+            for (Crisis c : list) {
+                csv.append(c.getId() != null ? c.getId() : "").append(",")
+                   .append(c.getTitle() != null ? c.getTitle() : "").append(",")
+                   .append(c.getStatus() != null ? c.getStatus() : "").append(",")
+                   .append(c.getPriority() != null ? c.getPriority() : "").append("\n");
+            }
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "text/csv")
+                    .header("Content-Disposition", "attachment; filename=crisis.csv")
+                    .body(csv.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Export failed: " + e.getMessage());
+        }
+    }
+
+    // 🔥 FILE UPLOAD (ONLY ONE METHOD)
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty");
+        }
+
+        if (file.getSize() > 2 * 1024 * 1024) {
+            return ResponseEntity.badRequest().body("File too large (max 2MB)");
+        }
+
+        if (!file.getOriginalFilename().endsWith(".csv")) {
+            return ResponseEntity.badRequest().body("Only CSV files allowed");
+        }
+
+        try {
+            String content = new String(file.getBytes());
+            System.out.println(content);
+
+            return ResponseEntity.ok("File uploaded successfully ✅");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Upload failed ❌");
+        }
     }
 }
