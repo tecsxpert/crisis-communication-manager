@@ -43,7 +43,7 @@ public class CrisisController {
         }
     }
 
-    // ✅ GET ALL WITH PAGINATION
+    // ✅ GET ALL WITH PAGINATION (Day 5)
     @GetMapping
     public ResponseEntity<Page<Crisis>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -52,7 +52,7 @@ public class CrisisController {
         return ResponseEntity.ok(service.getAll(page, size));
     }
 
-    // ✅ GET BY ID
+    // ✅ GET BY ID (Detail Page)
     @GetMapping("/{id}")
     public ResponseEntity<Crisis> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
@@ -71,19 +71,19 @@ public class CrisisController {
         return ResponseEntity.ok("Deleted successfully");
     }
 
-    // ✅ SEARCH
+    // ✅ SEARCH (simple search)
     @GetMapping("/search")
     public ResponseEntity<List<Crisis>> search(@RequestParam String q) {
         return ResponseEntity.ok(service.search(q));
     }
 
-    // ✅ STATS (Day 6)
+    // ✅ STATS API (Day 6)
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
         return ResponseEntity.ok(service.getStats());
     }
 
-    // 🔥 FILTER (Day 7)
+    // ✅ FILTER API (Day 7 - search/filter bar support)
     @GetMapping("/filter")
     public ResponseEntity<Page<Crisis>> filter(
             @RequestParam(required = false) String title,
@@ -93,11 +93,24 @@ public class CrisisController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
-        LocalDateTime startDate = start != null ? LocalDateTime.parse(start) : null;
-        LocalDateTime endDate = end != null ? LocalDateTime.parse(end) : null;
+        LocalDateTime startDate = (start != null && !start.isEmpty())
+                ? LocalDateTime.parse(start)
+                : null;
+
+        LocalDateTime endDate = (end != null && !end.isEmpty())
+                ? LocalDateTime.parse(end)
+                : null;
 
         return ResponseEntity.ok(
                 service.filter(title, status, startDate, endDate, page, size)
+        );
+    }
+
+    // 🔥 OPTIONAL (Bonus for Day 8 - AI Panel support)
+    @GetMapping("/ai-summary")
+    public ResponseEntity<String> getAISummary() {
+        return ResponseEntity.ok(
+                "AI Summary: Crisis is being monitored. Take immediate action if priority is high."
         );
     }
 }

@@ -5,6 +5,7 @@ import FormPage from "./pages/FormPage";
 import ListPage from "./pages/ListPage";
 import DetailPage from "./pages/DetailPage";
 import Dashboard from "./pages/Dashboard";
+import AIPanel from "./components/AIPanel"; // ✅ ADD THIS
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -17,21 +18,24 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* ✅ FIX: Default route */}
+        {/* ✅ Dashboard */}
         <Route path="/" element={<Dashboard />} />
 
-        {/* List + Form */}
+        {/* ✅ List + Form + AI Panel */}
         <Route
           path="/list"
           element={
             <>
               <FormPage onSuccess={handleRefresh} />
               <ListPage refresh={refresh} />
+
+              {/* 🔥 ADD AI PANEL HERE */}
+              <AIPanel />
             </>
           }
         />
 
-        {/* Detail */}
+        {/* ✅ Detail Page */}
         <Route path="/crisis/:id" element={<DetailPage />} />
 
       </Routes>
