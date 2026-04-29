@@ -5,7 +5,8 @@ import FormPage from "./pages/FormPage";
 import ListPage from "./pages/ListPage";
 import DetailPage from "./pages/DetailPage";
 import Dashboard from "./pages/Dashboard";
-import AIPanel from "./components/AIPanel"; // ✅ ADD THIS
+import Analytics from "./pages/Analytics";   // 🔥 Day 10
+import AIPanel from "./components/AIPanel";
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -18,7 +19,7 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* ✅ Dashboard */}
+        {/* ✅ Dashboard (Home Page) */}
         <Route path="/" element={<Dashboard />} />
 
         {/* ✅ List + Form + AI Panel */}
@@ -28,15 +29,16 @@ function App() {
             <>
               <FormPage onSuccess={handleRefresh} />
               <ListPage refresh={refresh} />
-
-              {/* 🔥 ADD AI PANEL HERE */}
-              <AIPanel />
+              <AIPanel /> {/* AI Panel */}
             </>
           }
         />
 
         {/* ✅ Detail Page */}
         <Route path="/crisis/:id" element={<DetailPage />} />
+
+        {/* 🔥 Day 10: Analytics Page */}
+        <Route path="/analytics" element={<Analytics />} />
 
       </Routes>
     </BrowserRouter>
