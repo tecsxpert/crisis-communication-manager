@@ -1,0 +1,100 @@
+CRISIS COMMUNICATION MANAGER — DEMO SCENARIOS
+
+---------------------------------------------
+SCENARIO 1: VIEW ALL CRISES
+---------------------------------------------
+Action:
+Open Swagger → GET /api/crisis → Click Execute
+
+Expected Output:
+- List of all crisis records displayed
+- Around 30 records (from DataSeeder)
+
+Talking Point:
+"These are preloaded crisis records inserted automatically when the application starts."
+
+
+---------------------------------------------
+SCENARIO 2: CREATE NEW CRISIS
+---------------------------------------------
+Action:
+POST /api/crisis
+
+Request Body:
+{
+  "title": "Flood Alert",
+  "description": "Heavy rainfall in city",
+  "severity": "HIGH"
+}
+
+Expected Output:
+- New crisis record created
+- Status 200 OK
+
+Talking Point:
+"This API allows users to create new crisis records with validation."
+
+
+---------------------------------------------
+SCENARIO 3: UPDATE CRISIS
+---------------------------------------------
+Action:
+PUT /api/crisis/{id}
+
+Example:
+Use ID = 1
+
+Request Body:
+{
+  "title": "Updated Flood",
+  "description": "Updated description",
+  "severity": "MEDIUM"
+}
+
+Expected Output:
+- Crisis updated successfully
+
+Talking Point:
+"We can update any existing crisis using this endpoint."
+
+
+---------------------------------------------
+SCENARIO 4: DELETE CRISIS
+---------------------------------------------
+Action:
+DELETE /api/crisis/{id}
+
+Example:
+Use ID = 1
+
+Expected Output:
+- Crisis deleted successfully
+
+Talking Point:
+"This API removes a crisis record from the system."
+
+
+---------------------------------------------
+SCENARIO 5: COUNT CRISES
+---------------------------------------------
+Action:
+GET /api/crisis/count
+
+Expected Output:
+- Total number of crisis records
+
+Talking Point:
+"This endpoint returns total number of crises in the system."
+
+
+---------------------------------------------
+SCENARIO 6: FILTER HIGH SEVERITY
+---------------------------------------------
+Action:
+GET /api/crisis/high
+
+Expected Output:
+- Only HIGH severity crises shown
+
+Talking Point:
+"This endpoint filters crisis data based on severity."
