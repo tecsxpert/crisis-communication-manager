@@ -1,4 +1,5 @@
 com\internship\tool\aop\AuditLog.class
+com\internship\tool\DataSeeder.class
 com\internship\tool\config\CorsConfig.class
 com\internship\tool\config\DataLoader.class
 com\internship\tool\config\SecurityConfig.class
