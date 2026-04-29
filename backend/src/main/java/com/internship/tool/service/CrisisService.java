@@ -25,6 +25,10 @@ public class CrisisService {
         return repo.findAll();
     }
 
+    public List<Crisis> getHigh() {
+        return repo.findBySeverity("HIGH");
+    }
+
     public Crisis getById(Long id) {
         log.info("Fetching crisis with ID: {}", id);
         return repo.findById(id)
@@ -44,4 +48,5 @@ public class CrisisService {
         log.info("Deleting crisis ID: {}", id);
         repo.deleteById(id);
     }
+
 }

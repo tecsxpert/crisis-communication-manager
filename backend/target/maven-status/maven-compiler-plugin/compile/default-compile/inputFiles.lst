@@ -2,6 +2,7 @@ C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\in
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\repository\CrisisRepository.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\config\JwtUtil.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\config\SecurityConfig.java
+C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\config\DataSeeder.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\config\DataLoader.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\entity\User.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\config\SwaggerConfig.java
@@ -16,4 +17,3 @@ C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\in
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\config\CorsConfig.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\CrisisManagerApplication.java
 C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\aop\AuditLog.java
-C:\Users\siddu\Desktop\crisis-communication-manager\backend\src\main\java\com\internship\tool\DataSeeder.java

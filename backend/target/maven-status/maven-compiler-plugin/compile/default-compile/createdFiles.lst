@@ -1,5 +1,4 @@
 com\internship\tool\aop\AuditLog.class
-com\internship\tool\DataSeeder.class
 com\internship\tool\config\CorsConfig.class
 com\internship\tool\config\DataLoader.class
 com\internship\tool\config\SecurityConfig.class
@@ -8,6 +7,7 @@ com\internship\tool\config\JwtFilter.class
 com\internship\tool\controller\CrisisController.class
 com\internship\tool\repository\CrisisRepository.class
 com\internship\tool\CrisisManagerApplication.class
+com\internship\tool\config\DataSeeder.class
 com\internship\tool\config\SwaggerConfig.class
 com\internship\tool\exception\ResourceNotFoundException.class
 com\internship\tool\config\CorsConfig$1.class

@@ -3,27 +3,27 @@ package com.internship.tool.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@NotBlank
-private String title;
-
-@NotBlank private String description;
-
-@Entity public class Crisis {
+@Entity
+public class Crisis {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String title;
+
+    @NotBlank
     private String description;
+
     private String severity;
 
-    // ✅ DEFAULT CONSTRUCTOR (REQUIRED)
+    // ✅ DEFAULT CONSTRUCTOR
     public Crisis() {
     }
 
-    // ✅ PARAMETERIZED CONSTRUCTOR (REQUIRED FOR TESTS)
-    public Crisis(String title, String description, String severity, String dummy) {
+    // ✅ PARAMETERIZED CONSTRUCTOR
+    public Crisis(String title, String description, String severity) {
         this.title = title;
         this.description = description;
         this.severity = severity;
