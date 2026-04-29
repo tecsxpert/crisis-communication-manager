@@ -12,32 +12,31 @@ import java.util.List;
 public class CrisisController {
 
     @Autowired
-    private CrisisService crisisService; // 🔥 THIS WAS MISSING
+    private CrisisService service;
 
-    // CREATE
     @PostMapping
     public Crisis create(@RequestBody Crisis crisis) {
-        return crisisService.createCrisis(crisis);
+        return service.create(crisis);
     }
 
-    // GET ALL
     @GetMapping
     public List<Crisis> getAll() {
-        return crisisService.getAllCrisis();
+        return service.getAll();
     }
 
-    // GET BY ID
     @GetMapping("/{id}")
     public Crisis getById(@PathVariable Long id) {
-        return crisisService.getCrisisById(id);
+        return service.getById(id);
     }
 
-    // 🔍 SEARCH (Day 7)
-    @GetMapping("/search")
-    public List<Crisis> search(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String severity) {
+    @PutMapping("/{id}")
+    public Crisis update(@PathVariable Long id, @RequestBody Crisis crisis) {
+        return service.update(id, crisis);
+    }
 
-        return crisisService.searchCrisis(title, severity);
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id) {
+        service.delete(id);
+        return "Deleted successfully";
     }
 }

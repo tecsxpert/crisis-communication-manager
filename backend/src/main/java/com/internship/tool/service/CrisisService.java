@@ -2,13 +2,8 @@ package com.internship.tool.service;
 
 import com.internship.tool.entity.Crisis;
 import com.internship.tool.repository.CrisisRepository;
-import com.internship.tool.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -16,58 +11,37 @@ import java.util.List;
 public class CrisisService {
 
     @Autowired
-    private CrisisRepository crisisRepository;
+    private CrisisRepository repo;
 
-    // 🔐 ADMIN ONLY
-    @PreAuthorize("hasRole('ADMIN')")
-    @CacheEvict(value = "crisisList", allEntries = true)
-    public Crisis createCrisis(Crisis crisis) {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CrisisService.class);
 
-        if (crisis.getTitle() == null || crisis.getTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-
-        if (crisis.getSeverity() == null || crisis.getSeverity().trim().isEmpty()) {
-            throw new IllegalArgumentException("Severity cannot be empty");
-        }
-
-        return crisisRepository.save(crisis);
+    public Crisis create(Crisis crisis) {
+        log.info("Creating crisis: {}", crisis.getTitle());
+        return repo.save(crisis);
     }
 
-    // 🔐 USER + ADMIN
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @Cacheable("crisisList")
-    public List<Crisis> getAllCrisis() {
-        System.out.println("Fetching from DB...");
-        return crisisRepository.findAll();
+    public List<Crisis> getAll() {
+        log.info("Fetching all crises");
+        return repo.findAll();
     }
 
-    // 🔐 USER + ADMIN
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @Cacheable(value = "crisis", key = "#id")
-    public Crisis getCrisisById(Long id) {
-
-        return crisisRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Crisis not found with id: " + id));
+    public Crisis getById(Long id) {
+        log.info("Fetching crisis with ID: {}", id);
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Not found"));
     }
 
-    // 🔍 SEARCH + FILTER
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public List<Crisis> searchCrisis(String title, String severity) {
+    public Crisis update(Long id, Crisis crisis) {
+        log.info("Updating crisis ID: {}", id);
+        Crisis existing = getById(id);
+        existing.setTitle(crisis.getTitle());
+        existing.setDescription(crisis.getDescription());
+        existing.setSeverity(crisis.getSeverity());
+        return repo.save(existing);
+    }
 
-        if (title != null && severity != null) {
-            return crisisRepository
-                    .findByTitleContainingIgnoreCaseAndSeverity(title, severity);
-        }
-
-        if (title != null) {
-            return crisisRepository.findByTitleContainingIgnoreCase(title);
-        }
-
-        if (severity != null) {
-            return crisisRepository.findBySeverity(severity);
-        }
-
-        return crisisRepository.findAll();
+    public void delete(Long id) {
+        log.info("Deleting crisis ID: {}", id);
+        repo.deleteById(id);
     }
 }
