@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "users") // 🔥 FIX HERE
 @Data
-public class Crisis {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String username;
 
-    private String description;
+    private String password;
 
-    private String severity;
+    private String role;
 }

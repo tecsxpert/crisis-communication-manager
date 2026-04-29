@@ -1,23 +1,18 @@
 package com.internship.tool.repository;
 
+import com.internship.tool.entity.Crisis;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+public interface CrisisRepository extends JpaRepository<Crisis, Long> {
 
-import com.internship.tool.entity.Crisis;
-
-@Repository
-public interface CrisisRepository extends 
-        JpaRepository<Crisis, Long>,
-        JpaSpecificationExecutor<Crisis> {   // 🔥 IMPORTANT (for filters)
-
-    // 🔍 SEARCH (optional - you can still keep this)
+    // 🔍 Search by title
     List<Crisis> findByTitleContainingIgnoreCase(String title);
 
-    // 📊 STATS (Day 6)
-    long countByStatus(String status);
+    // 🔍 Filter by severity
+    List<Crisis> findBySeverity(String severity);
 
-    long countByPriority(String priority);
+    // 🔍 Search + filter combined
+    List<Crisis> findByTitleContainingIgnoreCaseAndSeverity(String title, String severity);
 }
