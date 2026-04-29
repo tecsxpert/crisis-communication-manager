@@ -1,13 +1,11 @@
 package com.internship.tool.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users") // 🔥 FIX HERE
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
     @Id
@@ -15,7 +13,8 @@ public class User {
     private Long id;
 
     private String username;
+
     private String password;
 
-    private String role; // ROLE_USER or ROLE_ADMIN
+    private String role;
 }

@@ -22,9 +22,15 @@ public class CrisisService {
     @PreAuthorize("hasRole('ADMIN')")
     @CacheEvict(value = "crisisList", allEntries = true)
     public Crisis createCrisis(Crisis crisis) {
+
         if (crisis.getTitle() == null || crisis.getTitle().trim().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be empty");
         }
+
+        if (crisis.getSeverity() == null || crisis.getSeverity().trim().isEmpty()) {
+            throw new IllegalArgumentException("Severity cannot be empty");
+        }
+
         return crisisRepository.save(crisis);
     }
 
@@ -40,31 +46,28 @@ public class CrisisService {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Cacheable(value = "crisis", key = "#id")
     public Crisis getCrisisById(Long id) {
+
         return crisisRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Crisis not found with id: " + id));
     }
 
-    // 🔍 SEARCH + FILTER (Day 7)
+    // 🔍 SEARCH + FILTER
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public List<Crisis> searchCrisis(String title, String severity) {
 
-        // case 1: both present
         if (title != null && severity != null) {
             return crisisRepository
                     .findByTitleContainingIgnoreCaseAndSeverity(title, severity);
         }
 
-        // case 2: only title
         if (title != null) {
             return crisisRepository.findByTitleContainingIgnoreCase(title);
         }
 
-        // case 3: only severity
         if (severity != null) {
             return crisisRepository.findBySeverity(severity);
         }
 
-        // case 4: none
         return crisisRepository.findAll();
     }
 }

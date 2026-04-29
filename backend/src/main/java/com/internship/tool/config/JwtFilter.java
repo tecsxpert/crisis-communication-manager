@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -33,21 +34,41 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
+        String token = null;
+        String username = null;
+
+        // ✅ Check header
         if (header != null && header.startsWith("Bearer ")) {
 
-            String token = header.substring(7);
-            String username = jwtUtil.extractUsername(token);
+            // ✅ Clean token properly
+            token = header.substring(7).trim();
+            token = token.replace("\n", "").replace("\r", "").trim();
 
-            User user = userRepository.findByUsername(username).orElse(null);
+            try {
+                username = jwtUtil.extractUsername(token);
+            } catch (Exception e) {
+                System.out.println("JWT Error: " + e.getMessage());
+            }
 
-            if (user != null) {
+            // ✅ If username valid & not already authenticated
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
+                User user = userRepository.findByUsername(username).orElse(null);
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                if (user != null) {
+
+                    // ✅ Set role correctly
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
+
+                    // ✅ IMPORTANT FIX (prevents 403)
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    // ✅ Set authentication
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
             }
         }
 

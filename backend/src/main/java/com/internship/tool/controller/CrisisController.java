@@ -12,7 +12,7 @@ import java.util.List;
 public class CrisisController {
 
     @Autowired
-    private CrisisService crisisService;   // 🔥 THIS WAS MISSING
+    private CrisisService crisisService; // 🔥 THIS WAS MISSING
 
     // CREATE
     @PostMapping
