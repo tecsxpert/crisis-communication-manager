@@ -1,46 +1,32 @@
 package com.internship.tool.config;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.internship.tool.entity.Crisis;
 import com.internship.tool.repository.CrisisRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
-@Configuration
-public class DataSeeder {
+@Component
+public class DataSeeder implements CommandLineRunner {
 
-    @Bean
-    CommandLineRunner initDatabase(CrisisRepository repo) {
-        return args -> {
+    @Autowired
+    private CrisisRepository repo;
 
-            // ⚠️ Prevent duplicate seeding
-            if (repo.count() > 0) return;
+    @Override
+    public void run(String... args) {
 
-            List<Crisis> data = Arrays.asList(
-                new Crisis("Server Down", "Main server failure", "ongoing", "1st"),
-                new Crisis("Database Issue", "Connection timeout", "ongoing", "2nd"),
-                new Crisis("Login Bug", "Users cannot login", "closed", "1st"),
-                new Crisis("Payment Error", "Transaction failed", "ongoing", "1st"),
-                new Crisis("UI Crash", "Frontend crash", "closed", "3rd"),
-                new Crisis("API Failure", "500 error", "ongoing", "2nd"),
-                new Crisis("Security Alert", "Suspicious login", "ongoing", "1st"),
-                new Crisis("Cache Issue", "Data not updating", "closed", "3rd"),
-                new Crisis("Deployment Fail", "Build failed", "ongoing", "2nd"),
-                new Crisis("Network Lag", "Slow response", "closed", "3rd"),
-                new Crisis("Disk Full", "Storage issue", "ongoing", "1st"),
-                new Crisis("Email Not Sending", "SMTP error", "closed", "2nd"),
-                new Crisis("Auth Error", "Token invalid", "ongoing", "1st"),
-                new Crisis("Memory Leak", "App slowing down", "ongoing", "1st"),
-                new Crisis("Crash Report", "Unexpected crash", "closed", "2nd")
-            );
+        if (repo.count() == 0) {
 
-            repo.saveAll(data);
+            for (int i = 1; i <= 30; i++) {
+                Crisis c = new Crisis();
+                c.setTitle("Crisis " + i);
+                c.setDescription("Sample description " + i);
+                c.setSeverity("MEDIUM");
 
-            System.out.println("🔥 15 Demo Records Inserted!");
-        };
+                repo.save(c);
+            }
+
+            System.out.println("✅ 30 Crisis records inserted");
+        }
     }
 }

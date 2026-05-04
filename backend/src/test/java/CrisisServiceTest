@@ -1,0 +1,17 @@
+@SpringBootTest
+class CrisisServiceTest {
+
+    @Autowired
+    private CrisisService service;
+
+    @Test
+    void testCreateCrisis() {
+        Crisis c = new Crisis();
+        c.setTitle("Test");
+        c.setDescription("Test Desc");
+
+        Crisis result = service.create(c);
+
+        assertNotNull(result);
+    }
+}
