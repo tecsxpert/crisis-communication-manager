@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;                 // 🔥 NEW (Day 11)
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -31,22 +31,22 @@ public class CrisisService {
         return repository.save(crisis);
     }
 
-    // ✅ GET ALL (⚠️ Use only when needed)
+    // ✅ GET ALL (avoid using in large data)
     public List<Crisis> getAll() {
         return repository.findAll();
     }
 
-    // ✅ GET ALL WITH PAGINATION (🔥 IMPORTANT)
+    // ✅ GET ALL WITH PAGINATION
     public Page<Crisis> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by("createdAt").descending()   // 🔥 Day 11 optimization
+                Sort.by("createdAt").descending()
         );
         return repository.findAll(pageable);
     }
 
-    // ✅ GET BY ID
+    // ✅ GET BY ID (🔥 FIXED EXCEPTION)
     public Crisis getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Crisis not found with id: " + id));
@@ -76,7 +76,7 @@ public class CrisisService {
         return repository.findByTitleContainingIgnoreCase(q);
     }
 
-    // 🔥 DAY 6: STATS
+    // ✅ STATS
     public Map<String, Long> getStats() {
         Map<String, Long> stats = new HashMap<>();
 
@@ -88,7 +88,7 @@ public class CrisisService {
         return stats;
     }
 
-    // 🔥 DAY 7 + DAY 11: FILTER (OPTIMIZED)
+    // ✅ FILTER (Day 7 + Day 11 optimized)
     public Page<Crisis> filter(
             String title,
             String status,
@@ -117,7 +117,6 @@ public class CrisisService {
                     cb.between(root.get("createdAt"), start, end));
         }
 
-        // 🔥 Day 11 Performance: Pagination + Sorting
         Pageable pageable = PageRequest.of(
                 page,
                 size,

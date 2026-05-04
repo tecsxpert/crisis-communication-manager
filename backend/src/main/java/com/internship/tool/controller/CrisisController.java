@@ -6,7 +6,16 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.internship.tool.entity.Crisis;
@@ -75,13 +84,13 @@ public class CrisisController {
         return ResponseEntity.ok(service.search(q));
     }
 
-    // ✅ STATS (Day 6)
+    // ✅ STATS
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
         return ResponseEntity.ok(service.getStats());
     }
 
-    // ✅ FILTER (Day 7)
+    // ✅ FILTER
     @GetMapping("/filter")
     public ResponseEntity<Page<Crisis>> filter(
             @RequestParam(required = false) String title,
@@ -104,7 +113,7 @@ public class CrisisController {
         );
     }
 
-    // ✅ AI SUMMARY (Day 8)
+    // ✅ AI SUMMARY
     @GetMapping("/ai-summary")
     public ResponseEntity<String> getAISummary() {
         return ResponseEntity.ok(
@@ -112,7 +121,7 @@ public class CrisisController {
         );
     }
 
-    // 🔥 CSV EXPORT (Day 9)
+    // 🔥 CSV EXPORT
     @GetMapping("/export")
     public ResponseEntity<String> exportCSV() {
         try {
@@ -139,7 +148,7 @@ public class CrisisController {
         }
     }
 
-    // 🔥 FILE UPLOAD (Day 9)
+    // 🔥 FILE UPLOAD (CLEANED)
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
 
@@ -156,11 +165,7 @@ public class CrisisController {
         }
 
         try {
-            String content = new String(file.getBytes());
-            System.out.println(content);
-
             return ResponseEntity.ok("File uploaded successfully ✅");
-
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Upload failed ❌");
         }

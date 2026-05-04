@@ -7,4 +7,5 @@ com\internship\tool\repository\CrisisRepository.class
 com\internship\tool\config\DataSeeder.class
 com\internship\tool\config\CorsConfig$1.class
 com\internship\tool\aop\AuditAspect.class
+com\internship\tool\exception\GlobalExceptionHandler.class
 com\internship\tool\service\CrisisService.class
