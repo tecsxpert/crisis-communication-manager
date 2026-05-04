@@ -1,5 +1,7 @@
+import time
 from flask import Blueprint, request, jsonify
 import os
+import json
 from datetime import datetime
 from services.groq_client import call_groq
 
@@ -44,6 +46,10 @@ def describe():
 @ai_bp.route("/generate-report", methods=["POST"])
 def generate_report():
     data = request.get_json()
+
+    if not data or "input" not in data:
+        return jsonify({"error": "Missing input"}), 400
+
     user_input = data.get("input")
 
     with open("prompts/report_prompt.txt") as f:
@@ -55,4 +61,3 @@ def generate_report():
         return jsonify(json.loads(response))
     except:
         return jsonify({"error": "Invalid JSON from AI"})
-    

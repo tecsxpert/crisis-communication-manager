@@ -1,3 +1,40 @@
+import time
+
+def call_groq(prompt):
+    start = time.time()
+
+    # existing API call
+    response = ...
+
+    end = time.time()
+    response_times.append((end - start) * 1000)
+
+    return response
+
+import redis
+import hashlib
+
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+def call_groq(prompt):
+    key = hashlib.sha256(prompt.encode()).hexdigest()
+
+    # 🔥 CHECK CACHE
+    cached = r.get(key)
+    if cached:
+        print("CACHE HIT")
+        return cached.decode()
+
+    print("CACHE MISS")
+
+    # API call
+    response = ...
+
+    # STORE CACHE (15 min = 900 sec)
+    r.setex(key, 900, response)
+
+    return response    
+
 import requests
 import os
 import json

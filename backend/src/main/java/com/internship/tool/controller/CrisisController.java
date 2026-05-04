@@ -12,7 +12,7 @@ import java.util.List;
 public class CrisisController {
 
     @Autowired
-    private CrisisService crisisService; // 🔥 THIS WAS MISSING
+    private CrisisService crisisService;
 
     // CREATE
     @PostMapping
@@ -32,7 +32,7 @@ public class CrisisController {
         return crisisService.getCrisisById(id);
     }
 
-    // 🔍 SEARCH (Day 7)
+    // SEARCH
     @GetMapping("/search")
     public List<Crisis> search(
             @RequestParam(required = false) String title,

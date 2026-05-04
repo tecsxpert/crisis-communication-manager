@@ -1,3 +1,7 @@
+import time
+
+start_time = time.time()
+response_times = []
 from flask import Flask
 from routes.ai_routes import ai_bp
 
