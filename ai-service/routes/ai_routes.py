@@ -40,3 +40,19 @@ def describe():
     ai_response["generated_at"] = datetime.utcnow().isoformat()
 
     return jsonify(ai_response)
+
+@ai_bp.route("/generate-report", methods=["POST"])
+def generate_report():
+    data = request.get_json()
+    user_input = data.get("input")
+
+    with open("prompts/report_prompt.txt") as f:
+        prompt = f.read().replace("{input}", user_input)
+
+    response = call_groq(prompt)
+
+    try:
+        return jsonify(json.loads(response))
+    except:
+        return jsonify({"error": "Invalid JSON from AI"})
+    

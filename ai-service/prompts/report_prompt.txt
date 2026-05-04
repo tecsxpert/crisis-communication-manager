@@ -1,0 +1,21 @@
+You are an AI assistant for crisis management.
+
+Given the input, generate a structured report in JSON format:
+
+{
+  "title": "",
+  "summary": "",
+  "overview": "",
+  "key_items": [],
+  "recommendations": []
+}
+
+Rules:
+- Keep title short
+- Summary = 1-2 lines
+- Overview = detailed explanation
+- Key items = important facts
+- Recommendations = actionable steps
+
+Input:
+{input}
