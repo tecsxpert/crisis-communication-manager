@@ -14,7 +14,13 @@ import com.internship.tool.service.CrisisService;
 
 @RestController
 @RequestMapping("/crisis")
-@CrossOrigin(origins = "http://localhost:5173")
+
+// 🔥 DAY 11: Responsive + multi-origin support
+@CrossOrigin(origins = {
+    "http://localhost:5173",
+    "http://localhost:3000"
+})
+
 public class CrisisController {
 
     private final CrisisService service;
@@ -69,13 +75,13 @@ public class CrisisController {
         return ResponseEntity.ok(service.search(q));
     }
 
-    // ✅ STATS
+    // ✅ STATS (Day 6)
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
         return ResponseEntity.ok(service.getStats());
     }
 
-    // ✅ FILTER
+    // ✅ FILTER (Day 7)
     @GetMapping("/filter")
     public ResponseEntity<Page<Crisis>> filter(
             @RequestParam(required = false) String title,
@@ -98,7 +104,7 @@ public class CrisisController {
         );
     }
 
-    // ✅ AI SUMMARY
+    // ✅ AI SUMMARY (Day 8)
     @GetMapping("/ai-summary")
     public ResponseEntity<String> getAISummary() {
         return ResponseEntity.ok(
@@ -106,7 +112,7 @@ public class CrisisController {
         );
     }
 
-    // 🔥 CSV EXPORT
+    // 🔥 CSV EXPORT (Day 9)
     @GetMapping("/export")
     public ResponseEntity<String> exportCSV() {
         try {
@@ -133,7 +139,7 @@ public class CrisisController {
         }
     }
 
-    // 🔥 FILE UPLOAD (ONLY ONE METHOD)
+    // 🔥 FILE UPLOAD (Day 9)
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
 

@@ -8,12 +8,13 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;                 // 🔥 NEW (Day 11)
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.internship.tool.aop.AuditLog;
 import com.internship.tool.entity.Crisis;
-import com.internship.tool.repository.CrisisRepository;   // 🔥 IMPORTANT
+import com.internship.tool.repository.CrisisRepository;
 
 @Service
 public class CrisisService {
@@ -25,19 +26,23 @@ public class CrisisService {
     }
 
     // ✅ CREATE
-    @AuditLog("CREATE crisis")   // 🔥 ADD THIS
+    @AuditLog("CREATE crisis")
     public Crisis create(Crisis crisis) {
         return repository.save(crisis);
     }
 
-    // ✅ GET ALL
+    // ✅ GET ALL (⚠️ Use only when needed)
     public List<Crisis> getAll() {
         return repository.findAll();
     }
 
-    // ✅ GET ALL WITH PAGINATION
+    // ✅ GET ALL WITH PAGINATION (🔥 IMPORTANT)
     public Page<Crisis> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("createdAt").descending()   // 🔥 Day 11 optimization
+        );
         return repository.findAll(pageable);
     }
 
@@ -48,7 +53,7 @@ public class CrisisService {
     }
 
     // ✅ UPDATE
-    @AuditLog("UPDATE crisis")   // 🔥 ADD THIS
+    @AuditLog("UPDATE crisis")
     public Crisis update(Long id, Crisis crisis) {
         Crisis existing = getById(id);
 
@@ -61,7 +66,7 @@ public class CrisisService {
     }
 
     // ✅ DELETE
-    @AuditLog("DELETE crisis")   // 🔥 ADD THIS
+    @AuditLog("DELETE crisis")
     public void delete(Long id) {
         repository.deleteById(id);
     }
@@ -83,7 +88,7 @@ public class CrisisService {
         return stats;
     }
 
-    // 🔥 DAY 7: FILTER
+    // 🔥 DAY 7 + DAY 11: FILTER (OPTIMIZED)
     public Page<Crisis> filter(
             String title,
             String status,
@@ -112,7 +117,13 @@ public class CrisisService {
                     cb.between(root.get("createdAt"), start, end));
         }
 
-        Pageable pageable = PageRequest.of(page, size);
+        // 🔥 Day 11 Performance: Pagination + Sorting
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("createdAt").descending()
+        );
+
         return repository.findAll(spec, pageable);
     }
 }

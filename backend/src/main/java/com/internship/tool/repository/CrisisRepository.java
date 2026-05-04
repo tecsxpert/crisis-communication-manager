@@ -11,13 +11,20 @@ import com.internship.tool.entity.Crisis;
 @Repository
 public interface CrisisRepository extends 
         JpaRepository<Crisis, Long>,
-        JpaSpecificationExecutor<Crisis> {   // 🔥 IMPORTANT (for filters)
+        JpaSpecificationExecutor<Crisis> {   // 🔥 Required for dynamic filtering (Day 7+)
 
-    // 🔍 SEARCH (optional - you can still keep this)
+    // 🔍 SEARCH (used in /search API)
     List<Crisis> findByTitleContainingIgnoreCase(String title);
 
-    // 📊 STATS (Day 6)
+    // 📊 STATS (used in /stats API)
     long countByStatus(String status);
 
     long countByPriority(String priority);
+
+    // 🔥 OPTIONAL (Day 11 performance improvement)
+    // Fetch by status (helps index usage)
+    List<Crisis> findByStatus(String status);
+
+    // 🔥 OPTIONAL (filter optimization)
+    List<Crisis> findByPriority(String priority);
 }
