@@ -1,73 +1,54 @@
 package com.internship.tool.service;
 
-import com.internship.tool.entity.Crisis;
-import com.internship.tool.repository.CrisisRepository;
-import com.internship.tool.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
+import java.util.Map;
+
+import com.internship.tool.entity.Crisis;
+import com.internship.tool.repository.CrisisRepository;
 
 @Service
 public class CrisisService {
 
     @Autowired
-    private CrisisRepository crisisRepository;
+    private CrisisRepository repository;
 
-    // 🔐 ADMIN ONLY
-    @PreAuthorize("hasRole('ADMIN')")
-    @CacheEvict(value = "crisisList", allEntries = true)
+    @Autowired
+    private AiServiceClient aiServiceClient;
+
     public Crisis createCrisis(Crisis crisis) {
-
-        if (crisis.getTitle() == null || crisis.getTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-
-        if (crisis.getSeverity() == null || crisis.getSeverity().trim().isEmpty()) {
-            throw new IllegalArgumentException("Severity cannot be empty");
-        }
-
-        return crisisRepository.save(crisis);
+        Crisis saved = repository.save(crisis);
+        generateAi(saved);
+        return saved;
     }
 
-    // 🔐 USER + ADMIN
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @Cacheable("crisisList")
+    @Async
+    public void generateAi(Crisis crisis) {
+        Map<String, Object> aiResponse =
+                aiServiceClient.callDescribe(crisis.getDescription());
+
+        if (aiResponse != null) {
+            crisis.setSeverity((String) aiResponse.get("severity"));
+            crisis.setSummary((String) aiResponse.get("summary"));
+            repository.save(crisis);
+        }
+    }
+
+    // Get all crisis
     public List<Crisis> getAllCrisis() {
-        System.out.println("Fetching from DB...");
-        return crisisRepository.findAll();
+        return repository.findAll();
     }
 
-    // 🔐 USER + ADMIN
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @Cacheable(value = "crisis", key = "#id")
+    // Get crisis by ID
     public Crisis getCrisisById(Long id) {
-
-        return crisisRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Crisis not found with id: " + id));
+        return repository.findById(id).orElse(null);
     }
 
-    // 🔍 SEARCH + FILTER
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public List<Crisis> searchCrisis(String title, String severity) {
-
-        if (title != null && severity != null) {
-            return crisisRepository
-                    .findByTitleContainingIgnoreCaseAndSeverity(title, severity);
-        }
-
-        if (title != null) {
-            return crisisRepository.findByTitleContainingIgnoreCase(title);
-        }
-
-        if (severity != null) {
-            return crisisRepository.findBySeverity(severity);
-        }
-
-        return crisisRepository.findAll();
+    // Search (simple version)
+    public List<Crisis> searchCrisis(String severity, String keyword) {
+        return repository.findAll();
     }
 }

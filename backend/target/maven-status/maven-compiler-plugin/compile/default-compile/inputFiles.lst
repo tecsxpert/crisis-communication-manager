@@ -1,9 +1,19 @@
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\service\CrisisService.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\aop\AuditAspect.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\Application.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\config\CorsConfig.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\entity\Crisis.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\config\DataSeeder.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\controller\CrisisController.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\repository\CrisisRepository.java
-C:\Users\Nagendra GS\Downloads\your-project-folder\backend\src\main\java\com\internship\tool\aop\AuditLog.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/service/CrisisService.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/service/AiServiceClient.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/aop/AuditLog.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/config/JwtFilter.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/config/JwtUtil.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/config/DataLoader.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/controller/CrisisController.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/exception/ResourceNotFoundException.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/config/SecurityConfig.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/config/CorsConfig.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/aop/AuditAspect.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/entity/User.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/entity/Crisis.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/exception/GlobalExceptionHandler.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/repository/CrisisRepository.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/ToolApplication.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/config/SwaggerConfig.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/controller/AuthController.java
+/mnt/c/Users/mahee/Desktop/Crisis Communication Manager/backend/src/main/java/com/internship/tool/repository/UserRepository.java

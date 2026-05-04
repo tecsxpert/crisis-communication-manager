@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.internship.tool.controller.CrisisControllerTest
--------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.020 s -- in com.internship.tool.controller.CrisisControllerTest
