@@ -1,5 +1,5 @@
 import time
-
+from utils.metrics import response_times
 def call_groq(prompt):
     start = time.time()
 

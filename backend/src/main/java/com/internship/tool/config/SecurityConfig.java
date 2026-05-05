@@ -13,6 +13,12 @@ public class SecurityConfig {
 
         http
             .csrf().disable()
+             .headers(headers -> headers
+                .contentSecurityPolicy("default-src 'self'")
+                .frameOptions().deny()
+                .xssProtection().block(true)
+                .httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000)
+            )
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
             );

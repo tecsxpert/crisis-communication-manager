@@ -4,6 +4,7 @@ import os
 import json
 from datetime import datetime
 from services.groq_client import call_groq
+from utils.metrics import start_time, response_times
 
 ai_bp = Blueprint("ai", __name__)
 
@@ -61,3 +62,19 @@ def generate_report():
         return jsonify(json.loads(response))
     except:
         return jsonify({"error": "Invalid JSON from AI"})
+
+
+@ai_bp.route("/health", methods=["GET"])
+def health():
+    uptime = time.time() - start_time
+
+    avg_time = 0
+    if response_times:
+        avg_time = sum(response_times) / len(response_times)
+
+    return jsonify({
+        "status": "UP",
+        "model": "groq-llama",
+        "avg_response_time_ms": round(avg_time, 2),
+        "uptime_seconds": int(uptime)
+    })
