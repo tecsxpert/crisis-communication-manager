@@ -4,9 +4,12 @@ import os
 import json
 from datetime import datetime
 from services.groq_client import call_groq
+from services.embedding_service import get_embedding  # ✅ NEW
 from utils.metrics import start_time, response_times
+from utils.sanitizer import sanitize_input
 
 ai_bp = Blueprint("ai", __name__)
+
 
 # =========================
 # 🔹 DESCRIBE ENDPOINT
@@ -14,8 +17,9 @@ ai_bp = Blueprint("ai", __name__)
 @ai_bp.route("/describe", methods=["POST"])
 def describe():
     data = request.get_json()
-
-    # 🔒 INPUT VALIDATION
+    sender = data.get("sender", "").strip()
+    body = data.get("body", "").strip() 
+    user_input = sanitize_input(data["input"])
     if not data or "input" not in data:
         return jsonify({"error": "Missing 'input' field"}), 400
 
@@ -23,6 +27,14 @@ def describe():
 
     if len(user_input) == 0:
         return jsonify({"error": "Input cannot be empty"}), 400
+
+    # ✅ GENERATE EMBEDDING (Day 11)
+    try:
+        embedding = get_embedding(user_input)
+        # Optional: log or use later
+        # print("Embedding:", embedding)
+    except Exception as e:
+        print("Embedding error:", str(e))
 
     # 📄 LOAD PROMPT
     prompt_path = os.path.join("prompts", "describe_prompt.txt")
@@ -77,6 +89,12 @@ def generate_report():
 
     if len(user_input) == 0:
         return jsonify({"error": "Input cannot be empty"}), 400
+
+    # ✅ GENERATE EMBEDDING (Day 11)
+    try:
+        embedding = get_embedding(user_input)
+    except Exception as e:
+        print("Embedding error:", str(e))
 
     # 📄 LOAD PROMPT
     prompt_path = os.path.join("prompts", "report_prompt.txt")
